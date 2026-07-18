@@ -1,36 +1,118 @@
 .marquee-wrapper {
   width: 100%;
+  max-width: 100vw;
   overflow: hidden;
-  white-space: nowrap;
+  padding: 30px 0;
   position: relative;
-  padding: 10px 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+
+  // 1. Fade Edges (اختفاء ناعم عند الحواف)
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+
+  // 2. إيقاف الحركة عند الماوس
+  &.pause-on-hover:hover .marquee-group {
+    animation-play-state: paused;
+  }
 
   .marquee-track {
-    display: inline-flex;
-    animation: marquee-scroll linear infinite;
+    display: flex;
+    width: fit-content;
+    gap: 3rem; // المسافة بين المجموعتين
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3rem; // المسافة بين العناصر داخل المجموعة
+    min-width: 100%;
+    
+    // استخدام المتغير القادم من الـ React للسرعة
+    animation: scroll-x var(--duration, 30s) linear infinite;
+  }
+
+  // دعم عكس الاتجاه
+  .marquee-track.reverse .marquee-group {
+    animation-direction: reverse;
   }
 
   .marquee-item {
-    display: inline-block;
-    padding: 0 24px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    cursor: crosshair;
 
-    &::after {
-      content: "•";
-      margin-inline-start: 24px;
-      opacity: 0.4;
+    .text {
+      font-size: 2.5rem; // خط كبير وجريء
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      color: #ffffff;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
+
+    .separator {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.2); // لون باهت للفاصل
+      transition: transform 0.6s ease;
+    }
+  }
+
+  // ==========================================
+  // 3. تأثيرات الـ Hover المتقدمة (Text Stroke)
+  // ==========================================
+  
+  // عند عمل Hover على الشريط كله، اجعل كل النصوص شفافة ومفرغة
+  &:hover .text {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  }
+
+  // لكن الكلمة التي يقف عليها الماوس تحديداً ترجع للونها الأصلي وتكبر
+  .marquee-item:hover .text {
+    color: #ffffff;
+    -webkit-text-stroke: 0px transparent;
+    transform: scale(1.08) translateY(-3px);
+    text-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  // لفة خفيفة للفاصل النجمي عند الـ hover
+  .marquee-item:hover .separator {
+    transform: rotate(90deg) scale(1.2);
+    color: #ffffff;
   }
 }
 
-@keyframes marquee-scroll {
+// 4. الـ Animation باستخدام Hardware Acceleration
+@keyframes scroll-x {
   from {
-    transform: translateX(0);
+    transform: translateZ(0);
   }
   to {
-    transform: translateX(-50%);
+    // نتحرك بمقدار العرض بالكامل + مسافة الفجوة لضمان دقة اللوب
+    transform: translate3d(calc(-100% - 3rem), 0, 0); 
+  }
+}
+
+// دعم الـ Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .marquee-group {
+    animation-play-state: paused !important;
   }
 }

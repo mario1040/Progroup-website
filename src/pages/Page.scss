@@ -1,157 +1,149 @@
+/* ==========================================================================
+   Base Side Panel Layout
+   ========================================================================== */
+:root {
+  --side-panel-max-width: 796px;
+  --bg-color: rgb(3, 3, 3);
+  --text-color: white;
+}
+
 .side-panel {
   position: absolute;
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 796px;
+  max-width: var(--side-panel-max-width);
   height: 100vh;
-  background-color: rgb(3, 3, 3);
+  background-color: var(--bg-color);
+  color: var(--text-color);
   z-index: 100;
-  color: white;
+  overflow: visible;
 
   &.light {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    background-color: var(--bg-color);
+    color: var(--text-color);
   }
 
   @media (max-width: 768px) {
     position: absolute;
     top: auto;
     bottom: 0;
-    right: 0;
     width: 100%;
     height: 100%;
-    z-index: 100;
   }
 }
 
 .side-panel-wrapper {
-  height: 100%;
-  width: 100%;
   position: relative;
+  width: 100%;
+  height: 100%;
+   overflow: visible;
 }
 
 .side-panel-inner-wrapper {
-  height: 100%;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
-    width: 0px;
-    border-radius: 50%;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: white;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: rgb(0, 0, 0);
+    display: none;
   }
 }
 
+/* Close Button - Responsive & Dynamic */
 .side-panel-close-button {
   position: absolute;
   top: 50%;
-  left: 0%;
-  transform: translate(-50%, -50%);
   z-index: 10000;
-  height: 72px;
   width: 72px;
-  color: rgb(1, 1, 1);
-  border: none;
-  outline: none;
-  padding: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 72px;
+  border: 2px solid #ffffff;
   background-color: #ffffff;
-  transition: all 0.4s;
-  border: 2px solid white;
+  color: #010101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &--left {
+  left: 0;
+  right: auto;
+  transform: translate(-50%, -50%);
+  }
+
+  &--right {
+  right: 0;
+  left: auto;
+  transform: translate(50%, -50%);
+  }
+
+  &:hover {
+    background-color: #080808;
+    color: #ffffff;
+  }
+
+  &.light {
+    background-color: #060606;
+    color: #ffffff;
+    border-color: #060606;
+
+    &:hover {
+      background-color: #ffffff;
+      color: #080808;
+    }
+  }
 
   @media (max-width: 768px) {
     top: auto;
     left: auto;
     right: -4px;
     bottom: -4px;
-  }
-
-  &:hover {
-    cursor: pointer;
-    color: #ffffff;
-    background-color: #080808;
-  }
-
-  &.light {
-    background-color: #060606;
-    color: white;
-    border: 2px solid #060606;
-
-    &:hover {
-      color: #080808;
-      background-color: white;
-    }
+    transform: none;
   }
 }
 
+/* Content Elements */
 .side-panel-content-wrapper {
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   max-width: 550px;
-  padding-left: 96px;
-  margin-top: 64px;
-  padding-bottom: 72px;
+  padding: 64px 24px 72px 96px;
 
   @media (max-width: 768px) {
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: 164px;
+    max-width: 100%;
+    padding: 40px 16px 164px 16px;
   }
 }
 
 .side-panel-image-wrapper {
-  height: 400px;
   width: 700px;
+  height: 400px;
   margin-left: 96px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 28px;
+
   @media (max-width: 768px) {
-    margin-left: 0px;
+    width: calc(100% - 32px);
+    height: 280px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 }
 
 .side-panel-image {
+  width: 100%;
   height: 100%;
-  width: 100%;
   object-fit: cover;
-}
-
-.panel-header {
-  font-size: 36px;
-  opacity: 0;
-}
-
-.panel-quote {
-  margin-top: 6px;
-  font-size: 14px;
-  color: rgb(185, 185, 185);
-  opacity: 0;
-}
-
-.panel-content-text {
-  padding-top: 24px;
-  font-size: 14px;
-  line-height: 180%;
-  opacity: 0;
-}
-
-.side-panel-marquee {
-  width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  margin: 16px 0;
 }

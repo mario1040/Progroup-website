@@ -1,13 +1,17 @@
-// ==========================================================================
-// About Page — Premium, self-contained, CSS-driven animations
-// (no JS observer dependency — everything is guaranteed to appear)
-// ==========================================================================
+/* ==========================================================================
+   About Page — "Aurora Bento" Edition
+   Premium, asymmetric, fully responsive, non-traditional layout
+   Works with: src/pages/AboutPage/AboutPage.jsx + src/pages/Page.jsx
+   ========================================================================== */
 
-// ---------- Base entrance animation ----------
-@keyframes fade-up {
+/* --------------------------------------------------------------------------
+   Keyframes
+   -------------------------------------------------------------------------- */
+
+@keyframes about-fade-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(26px);
   }
   to {
     opacity: 1;
@@ -15,320 +19,914 @@
   }
 }
 
-@keyframes shine-text {
+@keyframes about-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes about-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-26px, 30px) scale(1.08);
+  }
+}
+
+@keyframes about-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -24px) scale(1.06);
+  }
+}
+
+@keyframes about-shine {
   to {
     background-position: -200% center;
   }
 }
 
-@keyframes blob-float-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-30px, 40px) scale(1.1); }
+@keyframes about-sheen-sweep {
+  0% {
+    transform: translateX(-130%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(230%) skewX(-12deg);
+  }
 }
 
-@keyframes blob-float-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, -30px) scale(1.05); }
+@keyframes about-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(126, 126, 255, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(126, 126, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(126, 126, 255, 0);
+  }
 }
 
-@keyframes soft-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+@keyframes about-line-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
 }
 
-// ==========================================================================
-// Panel container
-// ==========================================================================
+/* --------------------------------------------------------------------------
+   Theme tokens (scoped — never leaks to other pages)
+   -------------------------------------------------------------------------- */
+
+.side-panel.about-page {
+  --a-accent: #7d7dff;
+  --a-accent-2: #ff7ac6;
+  --a-accent-3: #7ce8ff;
+  --a-text: rgba(255, 255, 255, 0.94);
+  --a-muted: rgba(255, 255, 255, 0.62);
+  --a-border: rgba(255, 255, 255, 0.1);
+  --a-border-strong: rgba(126, 126, 255, 0.4);
+  --a-card: rgba(255, 255, 255, 0.035);
+  --a-card-hover: rgba(255, 255, 255, 0.065);
+  --a-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  --a-radius-xl: 26px;
+  --a-radius-lg: 20px;
+  --a-radius-md: 14px;
+
+  &.light {
+    --a-text: rgba(10, 10, 16, 0.94);
+    --a-muted: rgba(20, 20, 30, 0.6);
+    --a-border: rgba(10, 10, 16, 0.08);
+    --a-border-strong: rgba(90, 90, 210, 0.3);
+    --a-card: rgba(10, 10, 20, 0.03);
+    --a-card-hover: rgba(10, 10, 20, 0.055);
+    --a-shadow: 0 20px 60px rgba(20, 20, 40, 0.1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Ambient background
+   -------------------------------------------------------------------------- */
+
 .side-panel.about-page {
   position: relative;
-  overflow: hidden;
 
   &::before,
   &::after {
     content: "";
     position: absolute;
     border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.18;
+    filter: blur(92px);
+    opacity: 0.22;
     pointer-events: none;
     z-index: 0;
   }
 
   &::before {
-    width: 420px;
-    height: 420px;
-    top: -120px;
-    right: -100px;
-    background: radial-gradient(circle, #6a6aff 0%, transparent 70%);
-    animation: blob-float-1 14s ease-in-out infinite;
+    width: 440px;
+    height: 440px;
+    top: -130px;
+    right: -120px;
+    background: radial-gradient(circle, var(--a-accent) 0%, transparent 72%);
+    animation: about-drift-a 15s ease-in-out infinite;
   }
 
   &::after {
-    width: 320px;
-    height: 320px;
-    bottom: 10%;
-    left: -80px;
-    background: radial-gradient(circle, #ff7a7a 0%, transparent 70%);
-    animation: blob-float-2 18s ease-in-out infinite;
+    width: 340px;
+    height: 340px;
+    left: -100px;
+    bottom: 8%;
+    background: radial-gradient(circle, var(--a-accent-2) 0%, transparent 72%);
+    animation: about-drift-b 19s ease-in-out infinite;
   }
 
-  &.light {
+  @media (max-width: 768px) {
     &::before {
-      background: radial-gradient(circle, #a3a3ff 0%, transparent 70%);
-      opacity: 0.12;
+      width: 240px;
+      height: 240px;
+      top: -80px;
+      right: -80px;
     }
     &::after {
-      background: radial-gradient(circle, #ffb3b3 0%, transparent 70%);
-      opacity: 0.12;
+      width: 190px;
+      height: 190px;
+      left: -70px;
+      bottom: 6%;
     }
   }
 
-  .side-panel-wrapper {
+  .side-panel-wrapper,
+  .side-panel-content-wrapper {
     position: relative;
     z-index: 1;
   }
+}
 
-  // ---------- Header ----------
+/* --------------------------------------------------------------------------
+   Panel header / hero image (base Page.jsx elements)
+   -------------------------------------------------------------------------- */
+
+.side-panel.about-page {
   .panel-header {
     position: relative;
     display: inline-block;
-    background: linear-gradient(90deg, #ffffff 0%, #9d9dff 60%, #ffffff 100%);
-    background-size: 200% auto;
+    font-size: clamp(30px, 4.6vw, 46px);
+    letter-spacing: -0.03em;
+    background: linear-gradient(
+      90deg,
+      currentColor 0%,
+      var(--a-accent) 45%,
+      var(--a-accent-2) 55%,
+      currentColor 100%
+    );
+    background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: shine-text 6s linear infinite;
+    animation: about-shine 7s linear infinite;
 
     &::after {
       content: "";
       position: absolute;
       left: 0;
-      bottom: -8px;
-      height: 2px;
-      width: 48px;
-      background: linear-gradient(90deg, #6a6aff, transparent);
+      bottom: -10px;
+      width: 56px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        var(--a-accent),
+        var(--a-accent-2),
+        transparent
+      );
     }
   }
 
-  &.light .panel-header {
-    background: linear-gradient(90deg, #060606 0%, #5555c9 60%, #060606 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .panel-quote {
+    color: var(--a-muted);
+  }
+  .panel-content-text {
+    color: var(--a-text);
+    max-width: 60ch;
   }
 
-  // ---------- Carousel wrapper premium border ----------
   .side-panel-image-wrapper {
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    animation: fade-up 0.9s ease-out both;
+    width: calc(100% - 96px);
+    max-width: 700px;
+    height: clamp(230px, 30vw, 400px);
+    border-radius: var(--a-radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--a-border);
+    box-shadow: var(--a-shadow);
+    animation: about-fade-up 0.85s ease-out both;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.02) 0%,
+        rgba(0, 0, 0, 0.22) 100%
+      );
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    @media (max-width: 768px) {
+      width: calc(100% - 32px);
+      height: 260px;
+      border-radius: var(--a-radius-lg);
+    }
   }
 
-  &.light .side-panel-image-wrapper {
-    border: 1px solid rgba(0, 0, 0, 0.06);
-  }
-
-  // ---------- Marquee ----------
   .side-panel-marquee {
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: linear-gradient(90deg, transparent, rgba(106, 106, 255, 0.08), transparent);
-    animation: fade-up 0.9s ease-out 0.15s both;
+    width: min(700px, calc(100% - 32px));
+    margin: 16px auto;
+    border-radius: 999px;
+    border-top: 1px solid var(--a-border);
+    border-bottom: 1px solid var(--a-border);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(126, 126, 255, 0.09),
+      transparent
+    );
+    animation: about-fade-up 0.9s ease-out 0.1s both;
 
     .marquee-item {
       font-weight: 500;
-
+      font-size: clamp(12px, 1.8vw, 14px);
       &::after {
-        color: #6a6aff;
+        color: var(--a-accent);
       }
     }
-  }
 
-  &.light .side-panel-marquee {
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-}
-
-// ==========================================================================
-// Stats section
-// ==========================================================================
-.about-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  width: 100%;
-  max-width: 550px;
-  padding-left: 96px;
-  padding-right: 24px;
-  margin-top: 48px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    padding-left: 16px;
-    padding-right: 16px;
-    gap: 32px 16px;
+    @media (max-width: 768px) {
+      width: calc(100% - 32px);
+      margin-left: 16px;
+    }
   }
 }
 
-.about-stat-item {
+/* --------------------------------------------------------------------------
+   Content wrapper
+   -------------------------------------------------------------------------- */
+
+.about-page-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  opacity: 0;
-  animation: fade-up 0.7s ease-out forwards;
+  gap: 8px;
+  width: 100%;
+}
 
-  // stagger via nth-child — مفيش أي اعتماد على JS
-  @for $i from 1 through 4 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{0.25 + ($i * 0.1)}s;
-    }
+.about-section {
+  width: 100%;
+  padding: 26px 0;
+  color: var(--a-text);
+  opacity: 0;
+  animation: about-fade-up 0.8s ease-out forwards;
+}
+
+@for $i from 1 through 9 {
+  .about-section:nth-of-type(#{$i}) {
+    animation-delay: #{$i * 0.05}s;
+  }
+}
+
+.about-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  max-width: 62ch;
+}
+
+.about-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--a-border);
+  background: var(--a-card);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--a-text);
+
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--a-accent), var(--a-accent-2));
+    box-shadow: 0 0 10px rgba(126, 126, 255, 0.7);
+  }
+}
+
+.about-section-title {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.about-lead {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--a-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Hero — asymmetric split, non-traditional
+   -------------------------------------------------------------------------- */
+
+.about-hero {
+  padding-top: 4px;
+}
+
+// The side panel is hard-capped at 796px (see Page.scss) on every screen size
+// above the mobile breakpoint — a laptop and a 4K monitor render the exact
+// same ~676px of usable width. A side-by-side hero was therefore always
+// squeezed; it only "looked fine" on phones because that's the one place
+// it collapses to a single column. Stacking it removes the squeeze everywhere.
+.about-hero-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-hero-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px;
+  border-radius: var(--a-radius-xl);
+  border: 1px solid var(--a-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent),
+    var(--a-card);
+  box-shadow: var(--a-shadow);
+  overflow: hidden;
+  order: 2;
+}
+
+.about-title {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(30px, 4.6vw, 52px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.about-hero-copy .about-lead {
+  max-width: 46ch;
+}
+
+.about-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.about-primary-button,
+.about-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.about-primary-button {
+  color: #0a0a10;
+  background: linear-gradient(135deg, #ffffff, #e7e7ff);
+  box-shadow: 0 10px 26px rgba(255, 255, 255, 0.12);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(255, 255, 255, 0.18);
+  }
+}
+
+.about-secondary-button {
+  color: var(--a-text);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--a-border);
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: var(--a-border-strong);
+    background: var(--a-card-hover);
+  }
+}
+
+.about-hero-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.about-hero-card {
+  position: relative;
+  height: 100%;
+  min-height: 300px;
+  border-radius: var(--a-radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--a-border);
+  box-shadow: var(--a-shadow);
+  transform: rotate(1.2deg);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: rotate(0deg) scale(1.015);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      140deg,
+      rgba(126, 126, 255, 0.18),
+      transparent 55%
+    );
+    pointer-events: none;
+  }
+}
+
+.about-hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.about-hero-card:hover .about-hero-image {
+  transform: scale(1.06);
+}
+
+/* --------------------------------------------------------------------------
+   Bento cards — shared base
+   -------------------------------------------------------------------------- */
+
+.about-story-card,
+.about-value-panel,
+.about-service-card,
+.about-reason-card,
+.about-stat-card,
+.about-cta-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--a-radius-lg);
+  border: 1px solid var(--a-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
+    var(--a-card);
+  box-shadow: var(--a-shadow);
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+.about-story-card,
+.about-value-panel,
+.about-service-card,
+.about-reason-card {
+  padding: 22px;
+}
+
+.about-story-card:hover,
+.about-value-panel:hover,
+.about-service-card:hover,
+.about-reason-card:hover,
+.about-stat-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--a-border-strong);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+    var(--a-card-hover);
+}
+
+.about-story-card h3,
+.about-value-panel h3,
+.about-service-card h3,
+.about-reason-card h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  color: var(--a-text);
+}
+
+.about-story-card p,
+.about-value-panel p,
+.about-service-card p,
+.about-reason-card p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--a-muted);
+}
+
+/* Story — asymmetric bento */
+.about-story-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.about-story-grid .about-story-card:first-child {
+  grid-column: span 2;
+}
+
+/* Stats strip */
+.about-stats {
+  padding-top: 8px;
+}
+
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.about-stat-card {
+  padding: 20px 18px;
+  opacity: 0;
+  animation: about-fade-up 0.7s ease-out forwards;
+}
+
+@for $i from 1 through 4 {
+  .about-stat-card:nth-child(#{$i}) {
+    animation-delay: #{0.1 + $i * 0.1}s;
   }
 }
 
 .about-stat-number {
   display: flex;
   align-items: baseline;
-  gap: 2px;
-  font-size: 34px;
-  font-weight: 600;
+  gap: 3px;
+  font-size: clamp(26px, 3.6vw, 38px);
+  font-weight: 700;
   line-height: 1;
-  background: linear-gradient(180deg, #ffffff, #a3a3ff);
+  background: linear-gradient(180deg, currentColor, var(--a-accent));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-
-  .light & {
-    background: linear-gradient(180deg, #060606, #4d4dcc);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
 }
 
 .about-stat-suffix {
-  font-size: 20px;
-  opacity: 0.7;
+  font-size: clamp(14px, 2.2vw, 18px);
+  opacity: 0.75;
 }
 
 .about-stat-label {
-  font-size: 12px;
-  letter-spacing: 0.4px;
-  opacity: 0.55;
-  line-height: 140%;
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--a-muted);
 }
 
-// ==========================================================================
-// Values section
-// ==========================================================================
-.about-values {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 550px;
-  padding-left: 96px;
-  padding-right: 24px;
-  margin-top: 56px;
-  padding-bottom: 96px;
-
-  @media (max-width: 768px) {
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: 180px;
-  }
+/* Marquee section */
+.about-marquee-section {
+  padding-top: 6px;
 }
 
-.about-value-card {
-  position: relative;
-  padding: 24px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(6px);
+.about-marquee-wrap {
+  border-radius: 999px;
+  border-top: 1px solid var(--a-border);
+  border-bottom: 1px solid var(--a-border);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(126, 126, 255, 0.08),
+    transparent
+  );
   overflow: hidden;
-  cursor: default;
+}
 
-  opacity: 0;
-  animation: fade-up 0.8s ease-out forwards;
+/* Values — spotlight bento */
+.about-values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
 
-  // stagger — كل كارت بيظهر بعد اللي قبله بشوية، مضمون يظهر مهما حصل
-  @for $i from 1 through 3 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{0.6 + ($i * 0.15)}s;
-    }
-  }
-
-  transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s ease;
-
+.about-value-panel {
   &::before {
     content: "";
     position: absolute;
     inset: 0;
     background: radial-gradient(
       220px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(106, 106, 255, 0.15),
-      transparent 60%
+      rgba(126, 126, 255, 0.18),
+      transparent 62%
     );
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.35s ease;
     pointer-events: none;
   }
 
-  &:hover {
-    border-color: rgba(106, 106, 255, 0.4);
-    transform: translateY(-4px);
-
-    &::before {
-      opacity: 1;
-    }
-
-    .about-value-index {
-      color: #6a6aff;
-      opacity: 1;
-    }
-  }
-
-  .light & {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: rgba(0, 0, 0, 0.015);
-
-    &:hover {
-      border-color: rgba(85, 85, 204, 0.4);
-    }
+  &:hover::before {
+    opacity: 1;
   }
 }
 
 .about-value-index {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  min-height: 38px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--a-border);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--a-text);
+  opacity: 0.75;
+}
+
+/* Services — split two-column */
+.about-services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* Process — zigzag vertical timeline */
+.about-process-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-process-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 18px;
+  border-radius: var(--a-radius-lg);
+  border: 1px solid var(--a-border);
+  background: var(--a-card);
+  opacity: 0;
+  animation: about-fade-up 0.7s ease-out forwards;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 52px;
+    left: 27px;
+    width: 2px;
+    height: calc(100% - 20px);
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--a-accent), transparent);
+    transform-origin: top;
+    animation: about-line-grow 0.6s ease-out forwards;
+    animation-delay: 0.3s;
+  }
+}
+
+@for $i from 1 through 4 {
+  .about-process-item:nth-child(#{$i}) {
+    animation-delay: #{0.1 + $i * 0.1}s;
+  }
+}
+
+.about-process-marker {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
-  opacity: 0.4;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  transition: color 0.3s ease, opacity 0.3s ease;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--a-accent), var(--a-accent-2));
+  animation: about-pulse-ring 2.4s infinite;
 }
 
-.about-value-title {
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 8px;
+.about-process-body {
+  padding-top: 4px;
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: var(--a-text);
+  }
+  p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--a-muted);
+    max-width: 58ch;
+  }
 }
 
-.about-value-desc {
-  font-size: 13px;
-  line-height: 170%;
-  opacity: 0.65;
+/* Reasons */
+.about-reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
 }
 
-// ==========================================================================
-// Panel content text (existing global elements) — تأكيد الظهور
-// نفس العناصر دي بيتحكم فيها GSAP في Page.jsx، بس بنضيف fallback
-// عشان لو الأنيميشن الأساسية اتأخرت تفضل مضمونة الظهور
-// ==========================================================================
+/* CTA — bold closing banner */
+.about-cta-section {
+  padding-bottom: 12px;
+}
+
+.about-cta-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 30px;
+  border-radius: var(--a-radius-xl);
+  border: 1px solid var(--a-border-strong);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(126, 126, 255, 0.18),
+      transparent 45%
+    ),
+    linear-gradient(135deg, rgba(126, 126, 255, 0.1), rgba(255, 122, 198, 0.06));
+}
+
+.about-cta-text {
+  margin-top: 10px;
+  max-width: 52ch;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--a-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .about-hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-hero-card {
+    min-height: 240px;
+  }
+
+  .about-story-grid,
+  .about-values-grid,
+  .about-reasons-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-story-grid .about-story-card:first-child {
+    grid-column: span 2;
+  }
+  .about-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .side-panel.about-page .side-panel-content-wrapper {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .about-section {
+    padding: 20px 0;
+  }
+
+  .about-hero-copy {
+    padding: 22px;
+  }
+  .about-title {
+    max-width: 100%;
+  }
+
+  .about-story-grid,
+  .about-values-grid,
+  .about-services-grid,
+  .about-reasons-grid,
+  .about-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-story-grid .about-story-card:first-child {
+    grid-column: span 1;
+  }
+
+  .about-process-item {
+    grid-template-columns: 44px 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+  .about-process-marker {
+    width: 44px;
+    height: 44px;
+    font-size: 11px;
+  }
+  .about-process-item:not(:last-child)::after {
+    left: 21px;
+    top: 44px;
+  }
+
+  .about-cta-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
+
+  .about-primary-button,
+  .about-secondary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section-title {
+    font-size: clamp(19px, 6vw, 24px);
+  }
+  .about-title {
+    font-size: clamp(28px, 10vw, 40px);
+  }
+
+  .about-hero-copy,
+  .about-story-card,
+  .about-value-panel,
+  .about-service-card,
+  .about-reason-card,
+  .about-stat-card,
+  .about-cta-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .about-hero-card {
+    min-height: 200px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Motion accessibility
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .side-panel.about-page *,
+  .side-panel.about-page *::before,
+  .side-panel.about-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 .side-panel.about-page {
-  .panel-quote,
-  .panel-content-text {
-    animation: soft-pulse 0s; // placeholder، الأنيميشن الحقيقية جوه GSAP في Page.jsx
+  .side-panel-image-wrapper {
+    width: min(100%, 720px);
+    height: clamp(280px, 32vw, 420px);
+
+    margin-inline: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

@@ -7,6 +7,7 @@ const DesignWorkPage = () => {
     <>
       <Page
         requireDarkRoom={false}
+        closeButtonSide="left"
         panelContent={{
           title: "Design Work",
           quote: "The best design is more than beautiful, it's meaningful.",

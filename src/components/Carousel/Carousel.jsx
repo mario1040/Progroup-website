@@ -1,72 +1,132 @@
-import React, { useState, useRef, useEffect } from "react";
-import gsap from "gsap";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./Carousel.scss";
 
-const Carousel = ({ images = [], autoPlay = true, interval = 4000 }) => {
+const Carousel = ({ images = [], autoPlay = true, interval = 4500 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const imgRefs = useRef([]);
+  const [direction, setDirection] = useState("next");
+  const [isPaused, setIsPaused] = useState(false); // للتحكم في توقف الـ Progress Bar
   const timerRef = useRef(null);
+  const touchStartX = useRef(null);
+  const trackRef = useRef(null);
 
-  const goTo = (index) => {
-    const nextIndex = (index + images.length) % images.length;
-    setActiveIndex(nextIndex);
+  const next = useCallback(() => {
+    setActiveIndex((prev) => {
+      setDirection("next");
+      return (prev + 1) % images.length;
+    });
+  }, [images.length]);
+
+  const prev = () => {
+    setActiveIndex((prevIndex) => {
+      setDirection("prev");
+      return (prevIndex - 1 + images.length) % images.length;
+    });
   };
 
-  const next = () => goTo(activeIndex + 1);
-  const prev = () => goTo(activeIndex - 1);
-
-  // Autoplay
+  // Autoplay Logic
   useEffect(() => {
-    if (!autoPlay || images.length <= 1) return;
+    if (!autoPlay || images.length <= 1 || isPaused) return;
     timerRef.current = setInterval(next, interval);
     return () => clearInterval(timerRef.current);
-  }, [activeIndex, autoPlay, interval, images.length]);
+  }, [autoPlay, interval, images.length, next, isPaused, activeIndex]);
 
-  // Animate on slide change
-  useEffect(() => {
-    const currentImg = imgRefs.current[activeIndex];
-    if (!currentImg) return;
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
 
-    gsap.fromTo(
-      currentImg,
-      { opacity: 0, scale: 1.05 },
-      { opacity: 1, scale: 1, duration: 0.9, ease: "power2.out" }
-    );
-  }, [activeIndex]);
+  // Spotlight Effect (تتبع الماوس)
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
+  };
+
+  // Touch / swipe support
+  const handleTouchStart = (e) => {
+    setIsPaused(true);
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const threshold = 40;
+
+    if (deltaX > threshold) {
+      prev();
+    } else if (deltaX < -threshold) {
+      next();
+    }
+    touchStartX.current = null;
+    setIsPaused(false);
+  };
 
   if (!images.length) return null;
 
   return (
-    <div className="carousel">
-      <div className="carousel-track">
-        {images.map((src, index) => (
-          <img
-            key={index}
-            ref={(el) => (imgRefs.current[index] = el)}
-            src={src}
-            alt={`slide-${index}`}
-            className={`carousel-image${index === activeIndex ? " active" : ""}`}
-          />
-        ))}
+    <div
+      className="carousel"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Overlay Gradient (يتم إضافته عبر الـ CSS ::after) */}
+
+      <div className="carousel-track" ref={trackRef}>
+        {images.map((src, index) => {
+          let state = "hidden";
+          if (index === activeIndex) state = "active";
+          else if (
+            (direction === "next" && index === (activeIndex - 1 + images.length) % images.length) ||
+            (direction === "prev" && index === (activeIndex + 1) % images.length)
+          ) {
+            state = "prev-slot";
+          }
+
+          return (
+            <div key={index} className={`carousel-slide ${state} ${direction}`}>
+              <img src={src} alt={`slide-${index + 1}`} className="carousel-image" />
+            </div>
+          );
+        })}
       </div>
 
       {images.length > 1 && (
         <>
-          <button className="carousel-arrow prev" onClick={prev} aria-label="previous">
+          {/* عداد الصور */}
+          <div className="carousel-counter">
+            {String(activeIndex + 1).padStart(2, "0")}
+            <span>/</span>
+            {String(images.length).padStart(2, "0")}
+          </div>
+
+          {/* الأزرار بتقنية Glass Morphism */}
+          <button
+            className="carousel-arrow prev"
+            onClick={() => { prev(); setIsPaused(false); }}
+            aria-label="previous"
+          >
             ‹
           </button>
-          <button className="carousel-arrow next" onClick={next} aria-label="next">
+          <button
+            className="carousel-arrow next"
+            onClick={() => { next(); setIsPaused(false); }}
+            aria-label="next"
+          >
             ›
           </button>
 
-          <div className="carousel-dots">
-            {images.map((_, index) => (
-              <span
-                key={index}
-                className={`carousel-dot${index === activeIndex ? " active" : ""}`}
-                onClick={() => goTo(index)}
-              />
-            ))}
+          {/* مؤشر التقدم بدلاً من النقاط التقليدية */}
+          <div className="carousel-progress">
+            <div
+              key={activeIndex} // إجبار الـ div على إعادة الرندر مع كل صورة ليبدأ الأنيميشن من جديد
+              className="carousel-progress-fill"
+              style={{
+                animationDuration: `${interval}ms`,
+                animationPlayState: isPaused || !autoPlay ? "paused" : "running"
+              }}
+            />
           </div>
         </>
       )}

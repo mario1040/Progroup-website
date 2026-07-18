@@ -6,7 +6,6 @@ import gsap from "gsap";
 
 const Menu = () => {
   const { isDarkRoom, isBeforeZooming } = useToggleRoomStore();
-
   const menuRef = useRef();
 
   const buttonClassNames = `nav-button${!isDarkRoom ? " light" : ""}`;
@@ -74,6 +73,7 @@ const Menu = () => {
             </svg>
           </NavLink>
         </div>
+
         <div className="second-row">
           <NavLink to="/dev-work">
             <svg
@@ -120,6 +120,106 @@ const Menu = () => {
                 d="M7.48928 1.80178L8.9375 0.353553L12.6464 4.0625L11.1982 5.51072L11.125 5.58395V5.6875V9.57489L2.50169 12.7106L2.14683 12.3558L5.34618 9.15646C5.45696 9.17684 5.57106 9.1875 5.6875 9.1875C6.72303 9.1875 7.5625 8.34806 7.5625 7.3125C7.5625 6.27697 6.72303 5.4375 5.6875 5.4375C4.65197 5.4375 3.8125 6.27697 3.8125 7.3125C3.8125 7.42891 3.82314 7.54302 3.84354 7.65385L0.644226 10.8532L0.289359 10.4983L3.42511 1.875H7.3125H7.41605L7.48928 1.80178Z"
                 stroke="currentColor"
                 strokeWidth="0.5"
+              />
+            </svg>
+          </NavLink>
+        </div>
+
+        {/* --- الأزرار المحدثة --- */}
+        <div className="third-row">
+          <NavLink to="/vr">
+            {/* أيقونة VR محدثة وأنيقة */}
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`vr-button ${buttonClassNames}`}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Outer Frame */}
+              <path
+                d="M3.5 10.5C3.5 8.84 4.84 7.5 6.5 7.5H17.5C19.16 7.5 20.5 8.84 20.5 10.5V13.5C20.5 15.16 19.16 16.5 17.5 16.5H15.5C14.8 16.5 14.2 16.9 13.8 17.4L13.3 18H10.7L10.2 17.4C9.8 16.9 9.2 16.5 8.5 16.5H6.5C4.84 16.5 3.5 15.16 3.5 13.5V10.5Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Left Lens */}
+              <rect
+                x="5.7"
+                y="9.6"
+                width="5"
+                height="4.2"
+                rx="2.1"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
+
+              {/* Right Lens */}
+              <rect
+                x="13.3"
+                y="9.6"
+                width="5"
+                height="4.2"
+                rx="2.1"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
+
+              {/* Bridge */}
+              <path
+                d="M10.7 11.7H13.3"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+
+              {/* Lens Shine */}
+              <path
+                d="M7 10.4L8 11"
+                stroke="currentColor"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+
+              <path
+                d="M15 10.4L16 11"
+                stroke="currentColor"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+            </svg>
+          </NavLink>
+          <NavLink to="/kitchens">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`kitchen-button ${buttonClassNames}`}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="3"
+                y="4"
+                width="18"
+                height="16"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path d="M3 10H21" stroke="currentColor" strokeWidth="1.5" />
+              <circle cx="8" cy="7" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="7" r="1.5" fill="currentColor" />
+              <path
+                d="M8 15H16"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
               />
             </svg>
           </NavLink>
