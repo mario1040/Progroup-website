@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    
+    <!-- Theme Color for Mobile Browsers -->
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Primary Meta Tags -->
+    <title>Pro Group | Excellence in Every Detail</title>
+    <meta name="title" content="Pro Group | Excellence in Every Detail" />
+    <meta name="description" content="Discover premium services and innovative solutions with Pro Group. We bring your visions to life." />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.progroup.com/" /> <!-- حط لينك الموقع الحقيقي هنا -->
+    <meta property="og:title" content="Pro Group | Excellence in Every Detail" />
+    <meta property="og:description" content="Discover premium services and innovative solutions with Pro Group. We bring your visions to life." />
+    <meta property="og:image" content="/media/og-image.jpg" /> <!-- تأكد إن الصورة موجودة في مجلد الـ public/media -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://www.progroup.com/" />
+    <meta property="twitter:title" content="Pro Group | Excellence in Every Detail" />
+    <meta property="twitter:description" content="Discover premium services and innovative solutions with Pro Group. We bring your visions to life." />
+    <meta property="twitter:image" content="/media/og-image.jpg" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/media/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/media/favicon.svg" />
+    <link rel="shortcut icon" href="/media/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/media/apple-touch-icon.png" />
+    <link rel="manifest" href="/media/site.webmanifest" />
+
+    <!-- Creative Preloader CSS -->
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        background-color: #0a0a0a; /* لون خلفية غامق ومريح للعين */
+      }
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0a0a0a;
+        z-index: 9999;
+      }
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The initial loader will be replaced automatically by React -->
+    <div id="root">
+      <div id="initial-loader">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Developer Console Message -->
+    <script>
+      console.log(
+        "%c Pro Group %c\nDeveloped with precision and creativity. Welcome aboard!",
+        "color: #0a0a0a; background: #ffffff; padding: 6px 12px; border-radius: 4px; font-size: 14px; font-weight: bold;",
+        "color: #888; font-size: 12px; font-style: italic; margin-top: 5px;"
+      );
+    </script>
+  </body>
+</html>

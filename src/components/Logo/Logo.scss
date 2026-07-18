@@ -1,0 +1,24 @@
+.logo {
+  position: fixed;
+  top: 5%;
+  left: 66px;
+  z-index: 40;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .logo-img {
+    width: 150px;   // عدّل المقاس حسب اللوجو بتاعك
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    left: 32px;
+    top: 32px;
+
+    .logo-img {
+      width: 90px;
+    }
+  }
+}
