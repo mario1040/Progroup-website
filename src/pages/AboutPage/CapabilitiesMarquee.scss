@@ -1,0 +1,40 @@
+.about-marquee-section {
+padding-top: 6px;
+}
+
+.about-marquee-wrap {
+width: min(700px, calc(100% - 32px));
+margin: 16px auto;
+border-radius: 999px;
+border-top: 1px solid var(--a-border);
+border-bottom: 1px solid var(--a-border);
+background: linear-gradient(
+90deg,
+transparent,
+rgba(126, 126, 255, 0.09),
+transparent
+);
+overflow: hidden;
+animation: about-fade-up 0.9s ease-out 0.1s both;
+}
+
+.about-marquee-wrap .marquee-wrapper {
+width: 100%;
+margin: 0 auto;
+}
+
+.about-marquee-wrap .marquee-item {
+font-weight: 500;
+font-size: clamp(12px, 1.8vw, 14px);
+
+&::after {
+color: var(--a-accent);
+}
+}
+
+@media (max-width: 768px) {
+.about-marquee-wrap {
+width: calc(100% - 32px);
+margin: 16px auto;
+}
+}

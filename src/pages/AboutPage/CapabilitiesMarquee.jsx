@@ -1,5 +1,5 @@
 import React from "react";
-import Marquee from "../../../components/Marquee/Marquee";
+import Marquee from "../../components/Marquee/Marquee";
 
 const items = [
   "3D Visualization",

@@ -1,0 +1,369 @@
+/* ==========================================================================
+   Company Story — "The Induction Console"
+   A smart-kitchen control-panel metaphor: glowing induction rings,
+   sequential LED strips, rising steam, and a terminal-style readout.
+   ========================================================================== */
+
+@keyframes console-led-blink {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@keyframes console-strip-chase {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes console-scan-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes console-steam-rise {
+  0% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0;
+  }
+  15% { opacity: 0.5; }
+  100% {
+    transform: translateY(-46px) scaleX(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes console-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes console-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes console-pulse-line {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+/* --------------------------------------------------------------------------
+   Kicker LED
+   -------------------------------------------------------------------------- */
+
+.console-led {
+  width: 6px;
+  height: 6px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  background: #4fe0c4;
+  box-shadow: 0 0 8px rgba(79, 224, 196, 0.9);
+  animation: console-led-blink 1.8s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Board layout
+   -------------------------------------------------------------------------- */
+
+.console-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.console-power-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 2px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, transparent, #4fe0c4, transparent);
+  animation: console-pulse-line 2.4s ease-in-out infinite;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Panel — brushed steel fascia
+   -------------------------------------------------------------------------- */
+
+.console-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  opacity: 0;
+  animation: console-fade-up 0.7s ease-out forwards;
+
+  background:
+    repeating-linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(160deg, #131318, #0b0b0e 60%);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 20px 50px rgba(0, 0, 0, 0.35);
+
+  transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+
+  &:nth-child(2) { animation-delay: 0.12s; }
+
+  &:hover,
+  &.is-powered {
+    transform: translateY(-4px);
+    border-color: rgba(79, 224, 196, 0.4);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 24px 60px rgba(0, 0, 0, 0.45),
+      0 0 40px rgba(79, 224, 196, 0.12);
+  }
+}
+
+/* LED status strip along the top */
+.console-strip {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 16px;
+
+  span {
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.14);
+    animation: console-strip-chase 1.6s ease-in-out infinite;
+
+    @for $i from 1 through 5 {
+      &:nth-child(#{$i}) { animation-delay: #{$i * 0.15}s; }
+    }
+  }
+
+  .console-panel:hover &,
+  .console-panel.is-powered & span {
+    background: linear-gradient(90deg, #4fe0c4, #7ce8ff);
+  }
+}
+
+/* Rising steam wisps */
+.console-steam {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 0;
+
+  i {
+    width: 10px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 70%);
+    opacity: 0;
+    filter: blur(2px);
+    animation: console-steam-rise 3.6s ease-in infinite;
+
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 1.2s; margin-top: 4px; }
+    &:nth-child(3) { animation-delay: 2.4s; }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Body: dial + display
+   -------------------------------------------------------------------------- */
+
+.console-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+/* Induction dial */
+.console-dial {
+  position: relative;
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+}
+
+.console-dial-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.dial-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 6;
+}
+
+.dial-power {
+  fill: none;
+  stroke: url(#none);
+  stroke: #2a4a44;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 314;
+  stroke-dashoffset: 260;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.6s ease;
+}
+
+.console-panel:hover .dial-power,
+.console-panel.is-powered .dial-power {
+  stroke: #4fe0c4;
+  stroke-dashoffset: 40;
+  filter: drop-shadow(0 0 6px rgba(79, 224, 196, 0.7));
+}
+
+.dial-scan {
+  fill: none;
+  stroke: rgba(124, 232, 255, 0.35);
+  stroke-width: 1;
+  stroke-dasharray: 4 10;
+  transform-origin: 60px 60px;
+  animation: console-scan-spin 6s linear infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.console-panel:hover .dial-scan,
+.console-panel.is-powered .dial-scan {
+  opacity: 1;
+}
+
+.console-dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.dial-zone {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dial-id {
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+
+.console-panel:hover .dial-id,
+.console-panel.is-powered .dial-id {
+  color: #4fe0c4;
+  text-shadow: 0 0 12px rgba(79, 224, 196, 0.6);
+}
+
+/* Digital display */
+.console-display {
+  flex: 1;
+  min-width: 0;
+}
+
+.console-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.console-display h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.console-display p {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.console-cursor {
+  display: inline-block;
+  width: 6px;
+  height: 12px;
+  margin-inline-start: 3px;
+  background: #4fe0c4;
+  vertical-align: middle;
+  animation: console-cursor-blink 1s steps(1) infinite;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .console-body { gap: 14px; }
+  .console-dial { width: 72px; height: 72px; }
+  .dial-id { font-size: 17px; }
+}
+
+@media (max-width: 768px) {
+  .console-board {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .console-panel { padding: 18px; }
+  .console-body { align-items: center; }
+}
+
+@media (max-width: 480px) {
+  .console-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .console-dial { width: 64px; height: 64px; }
+  .dial-zone { font-size: 7px; }
+  .dial-id { font-size: 15px; }
+  .console-display h3 { font-size: 16.5px; }
+  .console-display p { font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .console-led,
+  .console-strip span,
+  .console-steam i,
+  .dial-scan,
+  .console-cursor,
+  .console-power-line,
+  .console-panel {
+    animation: none !important;
+  }
+
+  .console-panel { opacity: 1; transform: none; }
+}

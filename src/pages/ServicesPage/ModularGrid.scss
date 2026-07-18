@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Modular Grid — "The Cabinet Wall"
+   Each service is a real cabinet door on a hinge that swings open to reveal
+   its contents — literal kitchen-module metaphor, not a card, not a list.
+   ========================================================================== */
+
+@keyframes cabinet-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cabinet-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.cabinet-wall {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  perspective: 1600px;
+}
+
+.cabinet-unit {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--s-radius-lg);
+  opacity: 0;
+  animation: cabinet-fade-up 0.6s ease-out forwards;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.06}s;
+    }
+  }
+}
+
+/* ---------- Interior (revealed behind the door) ---------- */
+.cabinet-interior {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border-radius: var(--s-radius-lg);
+  border: 1px solid var(--s-border);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.015) 0 1px,
+      transparent 1px 6px
+    ),
+    linear-gradient(160deg, #16161a, #0c0c0f 65%);
+  overflow: hidden;
+}
+
+.cabinet-tag {
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--s-border-strong);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--s-accent);
+}
+
+.cabinet-interior h4 {
+  margin: 6px 0 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: var(--s-text);
+}
+
+.cabinet-interior p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--s-muted);
+}
+
+.cabinet-specs {
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  li {
+    position: relative;
+    padding-inline-start: 14px;
+    font-size: 11px;
+    color: var(--s-muted);
+    opacity: 0.85;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--s-accent);
+    }
+  }
+}
+
+/* ---------- Door (the interactive front face) ---------- */
+.cabinet-door {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 16px;
+  border: none;
+  border-radius: var(--s-radius-lg);
+  cursor: pointer;
+  overflow: hidden;
+  font-family: inherit;
+  text-align: start;
+
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.05), transparent 40%),
+    linear-gradient(150deg, #24242b, #131318 70%);
+  border: 1px solid var(--s-border);
+  box-shadow: var(--s-shadow);
+
+  transform-style: preserve-3d;
+  transition:
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.6s ease;
+}
+
+.cabinet-grain {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  pointer-events: none;
+}
+
+.cabinet-id {
+  position: relative;
+  z-index: 1;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--s-muted);
+  opacity: 0.7;
+}
+
+.cabinet-title {
+  position: relative;
+  z-index: 1;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--s-text);
+  line-height: 1.2;
+}
+
+/* Cabinet handle */
+.cabinet-handle {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 46px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #cfd3d8, #8f949c);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transform: translateY(-50%);
+  transition: box-shadow 0.4s ease;
+}
+
+.hinge-left {
+  .cabinet-door {
+    transform-origin: left center;
+  }
+  .cabinet-handle {
+    right: 14px;
+  }
+}
+
+.hinge-right {
+  .cabinet-door {
+    transform-origin: right center;
+  }
+  .cabinet-handle {
+    left: 14px;
+  }
+}
+
+/* ---------- Open state: door swings back ---------- */
+.cabinet-unit.is-open {
+  .cabinet-door {
+    box-shadow: -18px 10px 34px rgba(0, 0, 0, 0.5);
+  }
+
+  &.hinge-left .cabinet-door {
+    transform: rotateY(-108deg);
+  }
+  &.hinge-right .cabinet-door {
+    transform: rotateY(108deg);
+  }
+
+  .cabinet-handle {
+    box-shadow: 0 0 10px rgba(255, 180, 84, 0.6);
+    animation: cabinet-glow-pulse 1.8s ease-in-out infinite;
+  }
+}
+
+.cabinet-unit:not(.is-open) .cabinet-door:hover {
+  box-shadow:
+    var(--s-shadow),
+    0 0 0 1px var(--s-border-strong);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .cabinet-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .cabinet-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .cabinet-unit {
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .cabinet-title {
+    font-size: 14px;
+  }
+
+  .cabinet-interior {
+    padding: 16px;
+  }
+
+  .cabinet-interior p {
+    font-size: 11.5px;
+  }
+
+  .cabinet-unit.is-open.hinge-left .cabinet-door {
+    transform: rotateY(-96deg);
+  }
+
+  .cabinet-unit.is-open.hinge-right .cabinet-door {
+    transform: rotateY(96deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .cabinet-wall {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .cabinet-unit {
+    aspect-ratio: 1 / 1.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cabinet-unit,
+  .cabinet-door,
+  .cabinet-handle {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .cabinet-unit {
+    opacity: 1;
+  }
+  .cabinet-unit.is-open .cabinet-door {
+    transform: none;
+    opacity: 0;
+    pointer-events: none;
+  }
+}

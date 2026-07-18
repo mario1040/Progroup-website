@@ -1,0 +1,387 @@
+/* ==========================================================================
+   About Hero — "The Reveal"
+   A darkroom canvas: the real photo hides under a dim layer and is
+   uncovered by a light-following lens. Nothing like a spotlight card,
+   nothing like a bento grid — a single living surface.
+   ========================================================================== */
+
+@keyframes reveal-badge-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes reveal-grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-2%, 2%); }
+}
+
+@keyframes reveal-curtain {
+  from { transform: translateY(105%); }
+  to { transform: translateY(0%); }
+}
+
+@keyframes reveal-chip-float {
+  0%, 100% { transform: translateY(0) rotate(var(--chip-rot, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--chip-rot, 0deg)); }
+}
+
+@keyframes reveal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes reveal-hint-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+/* --------------------------------------------------------------------------
+   Stage
+   -------------------------------------------------------------------------- */
+
+.about-hero { padding-top: 4px; }
+
+.reveal-stage {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: clamp(460px, 72vw, 620px);
+  border-radius: var(--a-radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--a-border);
+  background: #050507;
+  box-shadow: var(--a-shadow);
+  cursor: none;
+}
+
+/* Dim base layer — always visible, low-key */
+.reveal-image-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(180deg, rgba(5, 5, 8, 0.85), rgba(5, 5, 8, 0.94)),
+    url("/images/about-hero.webp");
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(0.5) brightness(0.5);
+}
+
+/* Vivid layer — clipped to a circular lens that follows --lx/--ly */
+.reveal-image-vivid {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image: url("/images/about-hero.webp");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.15) contrast(1.05);
+  -webkit-mask-image: radial-gradient(
+    circle 190px at var(--lx, 60%) var(--ly, 40%),
+    #000 55%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle 190px at var(--lx, 60%) var(--ly, 40%),
+    #000 55%,
+    transparent 100%
+  );
+  transition: -webkit-mask-position 0.05s linear;
+}
+
+.reveal-grain {
+  position: absolute;
+  inset: -10%;
+  z-index: 3;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: reveal-grain-shift 6s steps(4) infinite;
+}
+
+.reveal-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 40%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Spinning badge
+   -------------------------------------------------------------------------- */
+
+.reveal-badge-spin {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 6;
+  width: clamp(78px, 10vw, 104px);
+  height: clamp(78px, 10vw, 104px);
+  pointer-events: none;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    animation: reveal-badge-spin 18s linear infinite;
+
+    text {
+      font-size: 8.4px;
+      letter-spacing: 0.1em;
+      fill: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+    }
+  }
+}
+
+.reveal-badge-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36%;
+  height: 36%;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #050507;
+  background: linear-gradient(135deg, #ffffff, #d9d9ff);
+}
+
+/* --------------------------------------------------------------------------
+   Scattered chips (moodboard feel)
+   -------------------------------------------------------------------------- */
+
+.reveal-chip {
+  position: absolute;
+  z-index: 6;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  opacity: 0;
+  animation: reveal-fade-in 0.6s ease-out forwards, reveal-chip-float 5s ease-in-out infinite;
+  animation-delay: 0.5s, 0.5s;
+}
+
+.chip-1 { top: 26%; left: 6%; --chip-rot: -6deg; transform: rotate(-6deg); animation-delay: 0.5s, 1.2s; }
+.chip-2 { bottom: 30%; left: 4%; --chip-rot: 4deg; transform: rotate(4deg); animation-delay: 0.7s, 1.8s; }
+.chip-3 { bottom: 18%; right: 8%; --chip-rot: -3deg; transform: rotate(-3deg); animation-delay: 0.9s, 2.4s; }
+
+/* --------------------------------------------------------------------------
+   Main content
+   -------------------------------------------------------------------------- */
+
+.reveal-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+  padding: clamp(28px, 6vw, 56px);
+}
+
+.reveal-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--a-accent), var(--a-accent-2));
+    box-shadow: 0 0 10px rgba(126, 126, 255, 0.8);
+  }
+}
+
+.reveal-headline {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.reveal-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 2px;
+}
+
+.reveal-word {
+  display: inline-block;
+  margin-inline-end: 0.28ch;
+  animation: reveal-curtain 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@for $i from 1 through 6 {
+  .reveal-line:nth-child(#{$i}) .reveal-word { animation-delay: #{0.1 + $i * 0.08}s; }
+}
+
+.reveal-word.is-accent {
+  background: linear-gradient(90deg, var(--a-accent), var(--a-accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.reveal-lead {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.68);
+  opacity: 0;
+  animation: reveal-fade-in 0.8s ease-out 0.7s forwards;
+}
+
+.reveal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+  opacity: 0;
+  animation: reveal-fade-in 0.8s ease-out 0.85s forwards;
+}
+
+/* --------------------------------------------------------------------------
+   Stats rail + hint
+   -------------------------------------------------------------------------- */
+
+.reveal-stats-rail {
+  position: absolute;
+  left: clamp(28px, 6vw, 56px);
+  bottom: 24px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  animation: reveal-fade-in 0.8s ease-out 1s forwards;
+
+  strong {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    margin-inline-end: 4px;
+  }
+}
+
+.reveal-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.reveal-hint {
+  position: absolute;
+  right: clamp(24px, 5vw, 40px);
+  bottom: 24px;
+  z-index: 6;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  animation: reveal-hint-pulse 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .reveal-badge-spin { top: 18px; right: 18px; }
+}
+
+@media (max-width: 768px) {
+  .reveal-stage {
+    min-height: 520px;
+    border-radius: var(--a-radius-lg);
+    cursor: default;
+  }
+
+  .reveal-image-vivid {
+    -webkit-mask-image: radial-gradient(circle 140px at var(--lx, 60%) var(--ly, 40%), #000 55%, transparent 100%);
+    mask-image: radial-gradient(circle 140px at var(--lx, 60%) var(--ly, 40%), #000 55%, transparent 100%);
+  }
+
+  .reveal-content { padding: 24px 20px; gap: 12px; }
+  .reveal-lead { max-width: 100%; }
+
+  .reveal-chip { font-size: 10px; padding: 6px 11px; }
+  .chip-1 { top: 20%; }
+  .chip-2 { bottom: 26%; }
+  .chip-3 { bottom: auto; top: 12%; right: 6%; left: auto; }
+
+  .reveal-stats-rail {
+    left: 20px;
+    bottom: 18px;
+    font-size: 12px;
+    gap: 10px;
+
+    strong { font-size: 14px; }
+  }
+
+  .reveal-hint { display: none; }
+
+  .about-primary-button,
+  .about-secondary-button { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .reveal-stage { min-height: 480px; }
+  .reveal-badge-spin { width: 64px; height: 64px; top: 14px; right: 14px; }
+  .reveal-badge-core { font-size: 10px; }
+  .reveal-headline { font-size: clamp(28px, 9vw, 40px); }
+  .reveal-chip { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-badge-spin svg,
+  .reveal-grain,
+  .reveal-chip,
+  .reveal-word,
+  .reveal-lead,
+  .reveal-actions,
+  .reveal-stats-rail,
+  .reveal-hint {
+    animation: none !important;
+  }
+
+  .reveal-word,
+  .reveal-lead,
+  .reveal-actions,
+  .reveal-stats-rail {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -194,7 +194,7 @@ const Menu = () => {
               />
             </svg>
           </NavLink>
-          <NavLink to="/kitchens">
+          <NavLink to="/Services-Page">
             <svg
               width="15"
               height="15"

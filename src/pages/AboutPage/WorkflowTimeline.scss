@@ -1,0 +1,331 @@
+/* ==========================================================================
+   Workflow Timeline — Zigzag, glass, glowing track
+   ========================================================================== */
+/* ضيفها في أول WorkflowTimeline.scss، قبل أي استخدام لها */
+@keyframes zigzag-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zigzag-track-flow {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(300%); opacity: 0; }
+}
+
+@keyframes zigzag-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(126, 126, 255, 0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(126, 126, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(126, 126, 255, 0); }
+}
+
+.zigzag-timeline-section {
+  margin-top: 4px;
+}
+
+.zigzag-wrapper {
+  position: relative;
+  padding: 28px 0 8px;
+  margin-top: 20px;
+}
+
+/* ---------- Central track ---------- */
+.zigzag-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: var(--a-border);
+  transform: translateX(-50%);
+  border-radius: 2px;
+  z-index: 1;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 32%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      var(--a-accent),
+      var(--a-accent-2),
+      transparent
+    );
+    animation: zigzag-track-flow 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+}
+
+.zigzag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ---------- Row ---------- */
+.zigzag-row {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  animation: zigzag-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  &:hover {
+    .zigzag-node {
+      transform: translate(-50%, -50%) scale(1.12);
+
+      .node-core {
+        color: #fff;
+        background: linear-gradient(135deg, var(--a-accent), var(--a-accent-2));
+        border-color: transparent;
+      }
+    }
+
+    .zigzag-content {
+      transform: translateY(-4px);
+      border-color: var(--a-border-strong);
+      background: var(--a-card-hover, rgba(255, 255, 255, 0.06));
+
+      .step-watermark {
+        opacity: 0.08;
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      &::before {
+        background: linear-gradient(90deg, var(--a-accent), var(--a-accent-2));
+      }
+    }
+  }
+
+  &.left-aligned {
+    justify-content: flex-start;
+
+    .zigzag-content {
+      border-right: 2px solid var(--a-accent);
+      text-align: right;
+
+      .step-watermark { right: 12px; }
+
+      h3 {
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+      }
+
+      &::before { right: -40px; }
+    }
+  }
+
+  &.right-aligned {
+    justify-content: flex-end;
+
+    .zigzag-content {
+      border-left: 2px solid var(--a-accent-2);
+      text-align: left;
+
+      .step-watermark { left: 12px; }
+
+      &::before { left: -40px; }
+    }
+  }
+}
+
+/* ---------- Node (dot on the track) ---------- */
+.zigzag-node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.node-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: zigzag-pulse-ring 2.6s infinite;
+}
+
+.node-core {
+  position: relative;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--a-accent);
+  background: var(--a-bg, #030303);
+  border: 1.5px solid var(--a-border-strong);
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+
+  svg { display: block; }
+}
+
+/* ---------- Content card ---------- */
+.zigzag-content {
+  width: calc(50% - 40px);
+  position: relative;
+  padding: 22px 28px;
+  background: var(--a-card);
+  border: 1px solid var(--a-border);
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease, background 0.4s ease;
+
+  /* horizontal connector to the node — vertically centered */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 2px;
+    background: var(--a-border);
+    transition: background 0.4s ease;
+    z-index: 0;
+  }
+
+  .step-watermark {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 92px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--a-text);
+    opacity: 0.04;
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .content-inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  h3 {
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    color: var(--a-text);
+  }
+
+  .step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    color: var(--a-accent);
+    background: rgba(126, 126, 255, 0.1);
+  }
+
+  .step-badge {
+    margin-inline-start: auto;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--a-muted);
+    opacity: 0.7;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--a-muted);
+  }
+}
+
+/* ==========================================================================
+   Responsive — collapses to a single-line vertical timeline
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .zigzag-wrapper { padding: 14px 0 4px; }
+
+  .zigzag-track { left: 21px; transform: none; }
+
+  .zigzag-list { gap: 22px; }
+
+  .zigzag-row {
+    justify-content: flex-end !important;
+
+    .zigzag-node {
+      left: 21px;
+      width: 34px;
+      height: 34px;
+    }
+
+    .node-core { width: 32px; height: 32px; }
+
+    .zigzag-content {
+      width: calc(100% - 54px) !important;
+      padding: 18px 20px;
+      text-align: left !important;
+      border-right: 0 !important;
+      border-left: 2px solid var(--a-accent) !important;
+
+      h3 { flex-direction: row !important; }
+
+      .step-watermark {
+        left: auto !important;
+        right: 10px !important;
+        font-size: 68px;
+      }
+
+      &::before {
+        left: -33px !important;
+        right: auto !important;
+        width: 33px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .zigzag-content {
+    padding: 16px;
+
+    h3 { font-size: 15.5px; }
+    p { font-size: 13px; }
+  }
+
+  .step-watermark { font-size: 54px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zigzag-track::after,
+  .node-ring,
+  .zigzag-row {
+    animation: none !important;
+  }
+
+    .zigzag-row { opacity: 1; } // fallback أساسي: لو الأنيميشن اتلغت، النص يفضل ظاهر
+}
