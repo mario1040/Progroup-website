@@ -1,82 +1,185 @@
-@use "../../index.scss" as styles;
+/* Move this @import to your document <head> in production for better font
+   loading performance — kept here so the component is self-contained. */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Reem+Kufi:wght@400;600&display=swap");
 
-.loading-screen {
+.kp-root {
+  --kp-bg: #0a0d10;
+  --kp-grid: rgba(201, 160, 99, 0.08);
+  --kp-line: #c9a063;
+  --kp-line-dim: rgba(201, 160, 99, 0.32);
+  --kp-copper: #d97a3d;
+  --kp-paper: #ede6da;
+  --kp-muted: #66747c;
+  --kp-glow: drop-shadow(0 0 6px rgba(201, 160, 99, 0.55));
+  --kp-glow-strong: drop-shadow(0 0 14px rgba(217, 122, 61, 0.75));
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-accent: "Reem Kufi", sans-serif;
+  font-family: var(--font-display);
+  background-color: var(--kp-bg);
+}
+
+/* ---------- blueprint line language ---------- */
+
+.kp-line {
+  fill: none;
+  stroke: var(--kp-line);
+  stroke-width: 1.6;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  filter: var(--kp-glow);
+}
+
+.kp-line--hidden {
+  stroke: var(--kp-line-dim);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  filter: none;
+}
+
+.kp-line--seam {
+  stroke: var(--kp-line-dim);
+  stroke-width: 1;
+  filter: none;
+}
+
+.kp-line--cord {
+  stroke: var(--kp-paper);
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+
+.kp-grid-line {
+  stroke: var(--kp-grid);
+  stroke-width: 1;
+  fill: none;
+}
+
+.kp-face {
+  stroke: none;
+}
+
+/* intensified glow on the wireframe while it solidifies into filled panels */
+.is-solidifying .kp-line {
+  filter: var(--kp-glow-strong);
+  transition: filter 0.6s ease;
+}
+
+/* ---------- scan line sweep ---------- */
+
+.kp-scanline {
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+  left: 8%;
+  right: 8%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--kp-copper), transparent);
+  box-shadow: 0 0 16px 3px rgba(217, 122, 61, 0.7);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+/* ---------- title block / hud text ---------- */
+
+.kp-hud {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.kp-title-block {
+  background-color: rgba(10, 13, 16, 0.85);
+  border: 1px solid var(--kp-line-dim);
+  backdrop-filter: blur(6px);
+}
+
+.kp-title-block__row {
+  border-bottom: 1px dashed rgba(201, 160, 99, 0.15);
+}
+
+.kp-title-block__row:last-child {
+  border-bottom: none;
+}
+
+/* ---------- progress bar ---------- */
+
+.kp-bar-track {
+  position: relative;
+  background-color: rgba(201, 160, 99, 0.12);
   overflow: hidden;
-  z-index: 100000;
 }
 
-.background-top-half,
-.background-bottom-half {
+.kp-bar-track::before {
+  content: "";
   position: absolute;
-  height: 50%;
-  width: 100%;
-  background-color: #060606;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--kp-line-dim) 0,
+    var(--kp-line-dim) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+  opacity: 0.35;
 }
 
-.background-top-half {
-  top: 0;
+.kp-bar-fill {
+  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--kp-copper), var(--kp-line));
+  box-shadow: 0 0 10px var(--kp-copper);
 }
 
-.background-bottom-half {
+.kp-bar-tip {
+  position: absolute;
+  right: -3px;
   top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--kp-copper);
+  box-shadow: 0 0 14px 4px var(--kp-copper);
+  animation: kp-tip-glow 1.4s ease-in-out infinite alternate;
 }
 
-.loading-screen-info-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  place-content: center;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
+@keyframes kp-tip-glow {
+  0% { box-shadow: 0 0 8px 2px var(--kp-copper); }
+  100% { box-shadow: 0 0 18px 6px var(--kp-copper); }
 }
 
-.intro-message-container {
-  position: absolute;
-  top: 53%;
-  left: 50%;
-  width: 100%;
-  display: flex;
-  place-content: center;
-  justify-content: center;
-  align-items: center;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 36px;
-  opacity: 0;
-  font-weight: lighter;
+.kp-percentage {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--kp-paper);
+  text-shadow: 0 0 18px rgba(201, 160, 99, 0.45);
+}
 
-  @media (max-width: 390px) {
-    font-size: 24px;
+.kp-percentage__unit {
+  color: var(--kp-muted);
+  vertical-align: super;
+}
+
+/* ---------- status dot ---------- */
+
+.kp-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--kp-copper);
+  box-shadow: 0 0 8px var(--kp-copper);
+  animation: kp-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes kp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.75); }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .kp-status-dot,
+  .kp-bar-tip {
+    animation: none;
   }
-}
-
-.loading-bar-container {
-  width: 100%;
-  height: 1px;
-}
-
-.loading-bar {
-  width: 0;
-  height: 100%;
-  background-color: #ffffff;
-}
-
-.percentage {
-  font-size: 12px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  place-content: center;
-  justify-content: center;
-  align-items: center;
-  margin-top: 24px;
-  font-weight: light;
 }

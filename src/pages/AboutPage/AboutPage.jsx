@@ -36,7 +36,7 @@ const AboutPage = () => {
         title: "About Us",
         quote: "Building experiences, not just visuals.",
         content: [
-          "Daniels Design & Dev turns architectural ideas into immersive digital stories, high-end visuals, and interactive experiences.",
+          "Welcome to Professor Factory for producing and manufacturing modern kitchens",
         ],
       }}
       images={[
